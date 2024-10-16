@@ -8,7 +8,12 @@
 
     // Exemplo de dados de mensagens
     const messages: Message[] = [
-        { id: "1", direction: "sent", timestamp: "2024-10-15T12:34:56.000Z", content: "Oi, tudo bem?" },
+        {
+            id: "1",
+            direction: "sent",
+            timestamp: "2024-10-15T12:34:56.000Z",
+            content: "Oi, tudo bem?",
+        },
         {
             id: "2",
             direction: "received",
