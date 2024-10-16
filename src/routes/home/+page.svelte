@@ -81,14 +81,14 @@
 </script>
 
 <div class="container mx-auto flex justify-center flex-col  py-8">
-    <h1 class="text-3xl mb-4 text-gray-500">Lista de Contatos</h1>
+    <h1 class="text-3xl mb-4 text-gray-500">Contacts</h1>
     <ul class="max-h-[700px] w-full border rounded-md pl-3 pr-3 pt-1  ">
         {#each contacts2 as contact}
-        <ListItem
-        name={contact.name}
-        email={contact.email}
-        contactId={contact.contactId}
-        />
+          <ListItem
+          name={contact.name}
+          email={contact.email}
+          contactId={contact.contactId}
+          />
         {/each}
     </ul>
     <div class="flex justify-center items-center gap-10 mt-4">
