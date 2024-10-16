@@ -120,8 +120,7 @@
         },
     ];
 
-    // Função para formatar o timestamp com tipagem correta
-    function formatTimestamp(timestamp: string): string {
+    function formatTimestamp(timestamp: string) {
         const date = new Date(timestamp);
         return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
@@ -136,22 +135,18 @@
         <div>
             <ul class="space-y-4 border w-[1000px] rounded-md shadow-md p-4">
                 {#each messages as message}
-                    <li class="flex items-start {message.direction === 'sent' ? 'justify-end' : ''}">
-                        <!-- Se a mensagem for enviada -->
+                    <li class="flex items-start {message.direction === 'sent' ? 'justify-end' : 'justify-start'}">
                         {#if message.direction === "sent"}
                             <div class="flex flex-row space-x- space-x-3">
-                                <!-- Conteúdo da mensagem -->
                                 <div class="max-w-xs">
                                     <div class="bg-blue-100 p-3 rounded-lg">
                                         <p class="text-sm">{message.content}</p>
                                     </div>
-                                    <!-- Timestamp à direita -->
                                     <span class="text-xs text-gray-500 float-right mt-2"
                                         >{formatTimestamp(message.timestamp)}</span
                                     >
                                 </div>
 
-                                <!-- Avatar -->
                                 <div class="flex-shrink-0">
                                     <div
                                         class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white"
@@ -161,9 +156,7 @@
                                 </div>
                             </div>
                         {:else}
-                            <!-- Se a mensagem for recebida -->
                             <div class="flex space-x-3">
-                                <!-- Avatar -->
                                 <div class="flex-shrink-0">
                                     <div
                                         class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white"
@@ -172,12 +165,10 @@
                                     </div>
                                 </div>
 
-                                <!-- Conteúdo da mensagem -->
                                 <div class="max-w-xs">
                                     <div class="bg-gray-100 p-3 rounded-lg">
                                         <p class="text-sm">{message.content}</p>
                                     </div>
-                                    <!-- Timestamp à esquerda -->
                                     <span class="text-xs text-gray-500">{formatTimestamp(message.timestamp)}</span>
                                 </div>
                             </div>
