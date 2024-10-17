@@ -142,7 +142,7 @@
                 {#each messages as message}
                     <li class="flex items-start {message.direction === 'sent' ? 'justify-end' : 'justify-start'}">
                         {#if message.direction === "sent"}
-                            <div class="flex flex-row space-x- space-x-3">
+                            <div class="flex flex-row space-x-3">
                                 <div class="max-w-xs">
                                     <div class="bg-blue-100 p-3 rounded-lg">
                                         <p class="text-sm">{message.content}</p>
