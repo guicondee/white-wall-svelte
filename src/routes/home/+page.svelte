@@ -31,16 +31,16 @@
     // { name: 'George Clooney', email: 'george@flowbite.com', contactId: '74120' },
   ];
 
-  // Calcular total de páginas
+  
   const totalPages = Math.ceil(contacts2.length / itemsPerPage);
 
-  // Função para obter contatos da página atual
+ 
   const paginatedContacts = () => {
     const start = (currentPage - 1) * itemsPerPage;
     return contacts.slice(start, start + itemsPerPage);
   };
 
-  // Funções para navegação
+  
   const nextPage = () => {
     if (currentPage < totalPages) {
       currentPage += 1;
@@ -53,29 +53,43 @@
     }
   };
 
-    onMount(async () => {
-        // const token = $authToken;
-        // if (!token) {
-        //     goto("/login");
-        //     return;
-        // }
-        // await fetchContacts(token);
-    });
+    // onMount(async () => {
+    //     const token = $authToken;
+    //     if (!token) {
+    //         goto("/login");
+    //         return;
+    //     }
+    //     await fetchContacts(token);
+    // });
 
     const fetchContacts = async (token: string) => {
-        const response = await fetch(
-            `https://api.blip.ai/api/v1/contacts?page=${currentPage}&size=${itemsPerPage}`,
-            {
-                headers: {
-                    Authorization: `Key ${token}`,
-                },
-            },
-        );
 
-        if (response.ok) {
-            const data = await response.json();
-            contacts = data.items as Contact[];
-        }
+      const url = "https://guilherme-conde-ztn5p.http.msging.net/commands";
+
+        const headers = {
+            Authorization: `${token}`,
+            "Content-Type": "application/json",
+        };
+
+        const body = JSON.stringify({
+            id: "1",
+            to: "postmaster@crm.msging.net",
+            method: "get", 
+            uri: "/contacts?$skip=0&$take=10", 
+        });
+
+        fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: body,
+        })
+            .then((response: any) => response.json())
+            .then((data: any) => {
+                console.log("Resposta da API:", data);
+            })
+            .catch((error: any) => {
+                console.error("Erro:", error);  
+            });
     };
  
 </script>
