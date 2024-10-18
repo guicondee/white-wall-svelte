@@ -8,12 +8,12 @@
     import { fetchContacts } from "$lib/services/blipService";
     import { contactsStore } from "$lib/stores/contactStore";
     import type { IContact } from "$lib/types/contacts/types";
+    import { pagination } from "$lib/stores/paginationStore";
 
     const schema = z.object({
         blip_hash: z.string().min(1, { message: "Chave de API Blip é obrigatório!" }),
     });
 
-    let apiKey = "";
     let blip_hash = "";
     let errors: { blip_hash?: string[] } = {};
     let isLoading = false;
@@ -38,6 +38,13 @@
         event.preventDefault();
         if (validateForm()) {
             isLoading = true;
+            let currentSkip, currentTake;
+
+            pagination.subscribe(({ skip, take }) => {
+                currentSkip = skip;
+                currentTake = take;
+            });
+
             try {
                 const response = await fetchContacts({
                     url: "https://guilherme-conde-ztn5p.http.msging.net/commands",
@@ -46,7 +53,7 @@
                         id: newId,
                         to: "postmaster@crm.msging.net",
                         method: "get",
-                        uri: "/contacts?$skip=0&$take=10",
+                        uri: `/contacts?$skip=${currentSkip}&$take=${currentTake}`,
                     },
                 });
 
