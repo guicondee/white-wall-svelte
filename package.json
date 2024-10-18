@@ -27,6 +27,7 @@
     },
     "type": "module",
     "dependencies": {
+        "svelte-material-icons": "^3.0.5",
         "tailwind-variants": "^0.2.1",
         "zod": "^3.23.8"
     }

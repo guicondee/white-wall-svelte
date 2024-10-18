@@ -1,22 +1,22 @@
 <script lang="ts">
-    import Button from "$lib/Button/Button.svelte";
-    import FormInputText from "$lib/Form/FormInputText/FormInputText.svelte";
-    import { createEventDispatcher } from "svelte";
+    import Button from "$lib/Components/Button/Button.svelte";
+    import FormInputText from "$lib/Components/Form/FormInputText/FormInputText.svelte";
     import { z } from "zod";
-    // import { authToken } from "../stores";
-
-    import LogoWhiteWall from "../../assets/logo-whitewall.png";
+    import { authToken } from "../../lib/stores/auth";
     import { goto } from "$app/navigation";
+    import LogoWhiteWall from "../../assets/logo-whitewall.png";
+    import { fetchContacts } from "$lib/services/blipService";
+    import { contactsStore } from "$lib/stores/contactStore";
+    import type { IContact } from "$lib/types/contacts/types";
 
     const schema = z.object({
-        blip_hash: z.string().min(1, { message: "blip hash é obrigatório!" }),
+        blip_hash: z.string().min(1, { message: "Chave de API Blip é obrigatório!" }),
     });
 
     let apiKey = "";
     let blip_hash = "";
     let errors: { blip_hash?: string[] } = {};
-
-    const dispatch = createEventDispatcher();
+    let isLoading = false;
 
     const validateForm = () => {
         const result = schema.safeParse({ blip_hash });
@@ -28,38 +28,48 @@
         return result.success;
     };
 
+    function generateUUID() {
+        return crypto.randomUUID();
+    }
+
+    const newId = generateUUID();
+
     const onSubmit = async (event: Event) => {
         event.preventDefault();
-        goto("/home");
-        // if (validateForm()) {
-        //     try {
-        //         const response = await fetch(
-        //             "https://api.blip.ai/api/v1/validate",
-        //             {
-        //                 method: "GET",
-        //                 headers: {
-        //                     "Content-Type": "application/json",
-        //                     Authorization: `Key ${apiKey}`,
-        //                 },
-        //             },
-        //         );
-        //         if (response.ok) {
-        //             // authToken.set(apiKey);
-        //             alert("its ok");
-        //         } else {
-        //             errors.blip_hash = ["Chave de API inválida!"];
-        //         }
-        //     } catch (error) {
-        //         errors.blip_hash = ["Erro ao conectar à API!"];
-        //     }
-        // }
+        if (validateForm()) {
+            isLoading = true;
+            try {
+                const response = await fetchContacts({
+                    url: "https://guilherme-conde-ztn5p.http.msging.net/commands",
+                    token: blip_hash,
+                    body: {
+                        id: newId,
+                        to: "postmaster@crm.msging.net",
+                        method: "get",
+                        uri: "/contacts?$skip=0&$take=10",
+                    },
+                });
+
+                if (response.status === "success") {
+                    authToken.set(blip_hash);
+                    localStorage.setItem("authToken", blip_hash);
+                    localStorage.setItem("contacts", JSON.stringify(response.items));
+                    contactsStore.set(response.resource.items as IContact[]);
+                    goto("/");
+                } else {
+                    errors.blip_hash = ["Chave de API inválida!"];
+                }
+            } catch (error) {
+                errors.blip_hash = ["Chave de API inválida!"];
+            } finally {
+                isLoading = false;
+            }
+        }
     };
 </script>
 
 <div class="flex items-center justify-center min-h-screen bg-background-light">
-    <div
-        class="w-full max-w-sm p-8 border border-gray-200 rounded-lg shadow-md"
-    >
+    <div class="w-full max-w-sm p-8 border border-gray-200 rounded-lg shadow-md">
         <div class="flex justify-center mb-6">
             <img src={LogoWhiteWall} alt="Logo" class="h-14" />
         </div>
@@ -73,10 +83,17 @@
                 error={errors.blip_hash && errors.blip_hash[0]}
             />
 
-            <Button type="submit" variant="primary">Enviar</Button>
+            <Button type="submit" variant="primary">
+                {#if isLoading}
+                    Carregando...
+                {:else}
+                    Enviar
+                {/if}
+            </Button>
         </form>
     </div>
 </div>
 
 <style>
+    /* Seu CSS personalizado */
 </style>
