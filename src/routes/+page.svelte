@@ -6,7 +6,7 @@
     import { get } from "svelte/store";
     import type { ITotalContacts, Contact } from "$lib/types/contacts/types";
     import { contactsStore, totalContactStore } from "$lib/stores/contactStore";
-    import { fetchContact } from "$lib/services/blipService";
+    import { fetchContact, fetchMessagesByIdContact, sendMessage } from "$lib/services/blipService";
     import { authToken } from "../lib/stores/auth";
     import { page } from "$app/stores";
 
@@ -24,7 +24,10 @@
             const query = $page.url.searchParams;
             const pageParam = query.get("page");
 
+            // fetchMessagesByIdContact({ id_contact: "11121023102013020@messenger.gw.msging.net", token });
+            const data = sendMessage({ token });
             const storedTotalPage = localStorage.getItem("totalContacts");
+
             if (storedTotalPage) {
                 let value = JSON.parse(storedTotalPage);
                 totalPages = Math.ceil(Number(value) / itemsPerPage);
@@ -128,11 +131,13 @@
     <ul class="max-h-[700px] w-full border rounded-md pl-3 pr-3 pt-1">
         {#if contacts.length}
             {#each contacts as contact}
-                <ListItem name={contact.name} email={contact.email} contactId={contact.identity} />
+                <ListItem name={contact.name} email={contact.email} idcontact={contact.identity} />
             {/each}
         {:else}
-            <div class="min-h-[600px]">
-                <h1>Sem contatos disponiveis</h1>
+            <div class="min-h-[600px] flex justify-center">
+                <div>
+                    <h1>Sem contatos disponiveis</h1>
+                </div>
             </div>
         {/if}
     </ul>

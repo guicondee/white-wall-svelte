@@ -5,11 +5,11 @@ export interface ITotalContacts {
 
 
 export interface Contact {
+    identity: string
     name: string
     group: string
     lastMessageDate: string
     lastUpdateDate: string
-    identity: string
     email: string
     gender: string
     extras: Extras

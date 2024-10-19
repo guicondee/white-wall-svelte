@@ -1,13 +1,14 @@
 <!-- ContactItem.svelte -->
 <script>
     import { goto } from "$app/navigation";
+    import { idContact } from "../../stores/idContact";
 
     export let name = "";
     export let email = "";
-    export let contactId = "";
+    export let idcontact = "";
 
     const navigateToConversation = () => {
-        goto(`/contacts`);
+        goto(`/contacts/${idcontact}`);
     };
 </script>
 
