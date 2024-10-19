@@ -5,9 +5,9 @@
     import { authToken } from "../../lib/stores/auth";
     import { goto } from "$app/navigation";
     import LogoWhiteWall from "../../assets/logo-whitewall.png";
-    import { fetchContacts } from "$lib/services/blipService";
-    import { contactsStore } from "$lib/stores/contactStore";
-    import type { IContact } from "$lib/types/contacts/types";
+    import { fetchContactsOnSubmitLogin } from "$lib/services/blipService";
+    import { contactsStore, totalContactStore } from "$lib/stores/contactStore";
+    import type { Contact, ITotalContacts } from "$lib/types/contacts/types";
     import { pagination } from "$lib/stores/paginationStore";
 
     const schema = z.object({
@@ -17,6 +17,7 @@
     let blip_hash = "";
     let errors: { blip_hash?: string[] } = {};
     let isLoading = false;
+    let currentPage = 1;
 
     const validateForm = () => {
         const result = schema.safeParse({ blip_hash });
@@ -46,7 +47,7 @@
             });
 
             try {
-                const response = await fetchContacts({
+                const response = await fetchContactsOnSubmitLogin({
                     url: "https://guilherme-conde-ztn5p.http.msging.net/commands",
                     token: blip_hash,
                     body: {
@@ -59,10 +60,12 @@
 
                 if (response.status === "success") {
                     authToken.set(blip_hash);
+                    contactsStore.set(response.resource?.items as Contact[]);
+                    totalContactStore.set(response.resource?.total);
+
                     localStorage.setItem("authToken", blip_hash);
-                    localStorage.setItem("contacts", JSON.stringify(response.items));
-                    contactsStore.set(response.resource.items as IContact[]);
-                    goto("/");
+                    localStorage.setItem("totalContacts", JSON.stringify(response.resource.total as ITotalContacts));
+                    goto(`/?page=${currentPage}`);
                 } else {
                     errors.blip_hash = ["Chave de API inválida!"];
                 }

@@ -3,59 +3,131 @@
     import ListItem from "$lib/Components/ListItem/ListItem.svelte";
     import "../app.css";
     import { onDestroy, onMount } from "svelte";
-    import { authToken } from "../lib/stores/auth";
     import { get } from "svelte/store";
-    import type { IContact } from "$lib/types/contacts/types";
-    import { contactsStore } from "$lib/stores/contactStore";
+    import type { ITotalContacts, Contact } from "$lib/types/contacts/types";
+    import { contactsStore, totalContactStore } from "$lib/stores/contactStore";
+    import { fetchContact } from "$lib/services/blipService";
+    import { authToken } from "../lib/stores/auth";
+    import { page } from "$app/stores";
 
-    let contacts: IContact[] = [];
+    let contacts: Contact[] = [];
+    let totalContacts: ITotalContacts = {} as ITotalContacts;
     let currentPage = 1;
     let itemsPerPage = 10;
-    let totalContacts = 0;
+    let totalPages = 0;
+    let currentSkip = 0;
+    let currentTake = 10;
 
-    const totalPages = Math.ceil(totalContacts / itemsPerPage);
+    onMount(() => {
+        const unsubscribe = page.subscribe(($page) => {
+            const token = get(authToken);
+            const query = $page.url.searchParams;
+            const pageParam = query.get("page");
 
-    const unsubscribe = contactsStore.subscribe((value) => {
+            const storedTotalPage = localStorage.getItem("totalContacts");
+            if (storedTotalPage) {
+                let value = JSON.parse(storedTotalPage);
+                totalPages = Math.ceil(Number(value) / itemsPerPage);
+            }
+
+            if (pageParam) {
+                currentPage = parseInt(pageParam, 10);
+            }
+
+            if (token) {
+                authToken.set(token);
+                goto(`/?page=${currentPage}`);
+            } else {
+                goto("/login");
+            }
+
+            const storedContacts = localStorage.getItem("contacts");
+            if (storedContacts) {
+                contactsStore.set(JSON.parse(storedContacts));
+            }
+        });
+
+        return () => unsubscribe();
+    });
+
+    const unsubscribeContact = contactsStore.subscribe((value) => {
         contacts = value;
     });
 
-    onDestroy(() => {
-        unsubscribe();
+    const unsubscribeTotalContact = totalContactStore.subscribe((value) => {
+        totalContacts = { total: value };
+        totalPages = Math.ceil(totalContacts.total / itemsPerPage);
     });
 
-    const paginatedContacts = () => {
-        const start = (currentPage - 1) * itemsPerPage;
-        return contacts.slice(start, start + itemsPerPage);
-    };
+    function generateUUID() {
+        return crypto.randomUUID();
+    }
 
-    const nextPage = () => {
+    const newId = generateUUID();
+
+    const nextPage = async () => {
         if (currentPage < totalPages) {
             currentPage += 1;
+            currentSkip = (currentPage - 1) * itemsPerPage;
+            const token = get(authToken);
+
+            goto(`/?page=${currentPage}`);
+
+            const response = await fetchContact({
+                currentTake,
+                currentSkip,
+                token,
+                id_contact: newId,
+            });
+
+            if (response && response.status === "success") {
+                contactsStore.set(response.resource?.items as Contact[]);
+                totalContactStore.set(response.resource.total);
+
+                localStorage.setItem("contacts", JSON.stringify(response.resource?.items));
+            } else {
+                console.error("Erro ao buscar contatos:", response);
+            }
         }
     };
 
-    const prevPage = () => {
+    const prevPage = async () => {
         if (currentPage > 1) {
             currentPage -= 1;
+            currentSkip = (currentPage - 1) * itemsPerPage;
+            const token = get(authToken);
+
+            goto(`/?page=${currentPage}`);
+
+            const response = await fetchContact({
+                currentTake,
+                currentSkip,
+                token,
+                id_contact: newId,
+            });
+
+            if (response && response.status === "success") {
+                contactsStore.set(response.resource?.items as Contact[]);
+                totalContactStore.set(response.resource.total);
+
+                localStorage.setItem("contacts", JSON.stringify(response.resource?.items));
+            } else {
+                console.error("Erro ao buscar contatos:", response);
+            }
         }
     };
 
-    onMount(() => {
-        const token = get(authToken);
-
-        if (!token) {
-            goto("/login");
-        } else {
-            goto("/");
-        }
+    onDestroy(() => {
+        unsubscribeContact();
+        unsubscribeTotalContact();
     });
 </script>
 
 <div class="container mx-auto flex justify-center flex-col py-8">
     <h1 class="text-3xl mb-4 text-gray-500">Contacts</h1>
     <ul class="max-h-[700px] w-full border rounded-md pl-3 pr-3 pt-1">
-        {#if contacts?.length > 0}
-            {#each paginatedContacts() as contact}
+        {#if contacts.length}
+            {#each contacts as contact}
                 <ListItem name={contact.name} email={contact.email} contactId={contact.identity} />
             {/each}
         {:else}
