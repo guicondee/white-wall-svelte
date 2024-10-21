@@ -2,13 +2,20 @@
 <script>
     import { goto } from "$app/navigation";
     import { idContact } from "../../stores/idContact";
+    import { authToken } from "../../stores/auth";
+    import { fetchMessagesByIdContact } from "$lib/services/blipService";
+    import { get } from "svelte/store";
 
     export let name = "";
     export let email = "";
     export let idcontact = "";
+    let messagesByIdContact = [];
+
+    const token = get(authToken);
 
     const navigateToConversation = () => {
         goto(`/contacts/${idcontact}`);
+        fetchMessagesByIdContact({ id_contact: idcontact, token });
     };
 </script>
 

@@ -1,4 +1,5 @@
 <script>
+    import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import LogoWitheWall from "../../../../assets/logo-whitewall.png";
     import Logout from "svelte-material-icons/Logout.svelte";
@@ -12,6 +13,7 @@
     function handleLogOut() {
         localStorage.removeItem("authToken");
         localStorage.removeItem("contacts");
+        goto("/login");
     }
 </script>
 

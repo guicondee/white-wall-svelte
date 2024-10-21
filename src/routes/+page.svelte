@@ -6,7 +6,7 @@
     import { get } from "svelte/store";
     import type { ITotalContacts, Contact } from "$lib/types/contacts/types";
     import { contactsStore, totalContactStore } from "$lib/stores/contactStore";
-    import { fetchContact, fetchMessagesByIdContact, sendMessage } from "$lib/services/blipService";
+    import { fetchContact } from "$lib/services/blipService";
     import { authToken } from "../lib/stores/auth";
     import { page } from "$app/stores";
 
@@ -24,8 +24,6 @@
             const query = $page.url.searchParams;
             const pageParam = query.get("page");
 
-            // fetchMessagesByIdContact({ id_contact: "11121023102013020@messenger.gw.msging.net", token });
-            const data = sendMessage({ token });
             const storedTotalPage = localStorage.getItem("totalContacts");
 
             if (storedTotalPage) {
@@ -128,7 +126,7 @@
 
 <div class="container mx-auto flex justify-center flex-col py-8">
     <h1 class="text-3xl mb-4 text-gray-500">Contacts</h1>
-    <ul class="max-h-[700px] w-full border rounded-md pl-3 pr-3 pt-1">
+    <ul class="min-h-[576px] w-full border rounded-md pl-3 pr-3 pt-1">
         {#if contacts.length}
             {#each contacts as contact}
                 <ListItem name={contact.name} email={contact.email} idcontact={contact.identity} />
@@ -144,7 +142,7 @@
     <div class="flex justify-center items-center gap-10 mt-4">
         <button
             on:click={prevPage}
-            class="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-blue-700"
+            class="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-400"
             disabled={currentPage === 1}
         >
             Anterior
@@ -154,7 +152,7 @@
         </span>
         <button
             on:click={nextPage}
-            class="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-blue-700"
+            class="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-400"
             disabled={currentPage === totalPages}
         >
             Próximo

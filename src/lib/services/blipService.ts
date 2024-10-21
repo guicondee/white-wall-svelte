@@ -1,12 +1,5 @@
-import { authToken } from "$lib/stores/auth";
+import type { FetchContactPagination, FetchContactsProps, FetchMessagesByIdContactProps, IFetchContactPagination, IFetchMessagesByIdContact } from "$lib/types/contacts/types";
 
-// const token = authToken
-
-type FetchContactsProps = {
-    url: string;
-    token: string;
-    body: any;
-};
 
 export async function fetchContactsOnSubmitLogin({ body, token, url }: FetchContactsProps) {
     const response = await fetch(url, {
@@ -26,51 +19,6 @@ export async function fetchContactsOnSubmitLogin({ body, token, url }: FetchCont
 }
 
 
-type FetchContactPagination = {
-    id_contact: string;
-    currentSkip: number;
-    currentTake: number;
-    token: string | null;
-
-}
-export interface IFetchContactPagination {
-    type: string
-    resource: Resource
-    method: string
-    status: string
-    id: string
-    from: string
-    to: string
-    metadata: Metadata
-}
-
-export interface Resource {
-    total: number
-    itemType: string
-    items: Item[]
-}
-
-export interface Item {
-    name: string
-    group: string
-    lastMessageDate: string
-    lastUpdateDate: string
-    identity: string
-    email?: string
-    gender: string
-    extras: Extras
-}
-
-export interface Extras {
-    email: string
-    plan: string
-    code: string
-}
-
-export interface Metadata {
-    traceparent: string
-    "#command.uri": string
-}
 
 export async function fetchContact({ currentSkip, currentTake, token, id_contact }: FetchContactPagination): Promise<IFetchContactPagination | null> {
     try {
@@ -107,12 +55,9 @@ export async function fetchContact({ currentSkip, currentTake, token, id_contact
     }
 }
 
-type FetchMessagesByIdContactProps = {
-    id_contact: string
-    token: string | null
-}
 
-export async function fetchMessagesByIdContact({ id_contact, token }: FetchMessagesByIdContactProps) {
+
+export async function fetchMessagesByIdContact({ id_contact, token }: FetchMessagesByIdContactProps): Promise<IFetchMessagesByIdContact | null> {
     try {
         const response = await fetch("https://guilherme-conde-ztn5p.http.msging.net/commands", {
             method: "POST",
@@ -127,67 +72,18 @@ export async function fetchMessagesByIdContact({ id_contact, token }: FetchMessa
             })
         });
 
-        // if (response.ok) {
-        //     const data: IFetchContactPagination = await response.json(); // Definindo o tipo da resposta
+        if (response.ok) {
+            const data: IFetchMessagesByIdContact = await response.json();  
 
-        //     if (data.status === "success") {
-        //         return data; // Retorne o objeto completo
-        //     } else {
-        //         console.log("Error: ", data); // Exibe o erro detalhado
-        //         return null; // Retorna null se não for sucesso
-        //     }
-        // } else {
-        //     console.log("Erro na requisição! Código de status: " + response.status);
-        //     return null; // Retorna null em caso de erro na requisição
-        // }
+            return data; 
+          
+        } else {
+            console.log("Erro na requisição! Código de status: " + response.status);
+            return null
+           
+        }
     } catch (error) {
         console.log("Erro na requisição:", error);
-        return null; // Retorna null em caso de erro
+       return null
     }
 }
-
-
-type MessageProps = {
-    token: string | null
-}
-
-export async function sendMessage({ token }: MessageProps) {
-    try {
-        const response = await fetch("https://guilherme-conde-ztn5p.http.msging.net/messages", {
-            method: "POST",
-            headers: {
-                Authorization: `Key ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                id: "4895483784334531164",
-                from: "11121023102013020@messenger.gw.msging.net",
-                to: "guilherme-conde-ztn5p",
-                type: "text/plain",
-                content: "Pode fwefwefew"
-            })
-        });
-
-        const data = response
-        console.log(data, "messages")
-
-        // if (response.ok) {
-        //     const data: IFetchContactPagination = await response.json(); // Definindo o tipo da resposta
-
-        //     if (data.status === "success") {
-        //         return data; // Retorne o objeto completo
-        //     } else {
-        //         console.log("Error: ", data); // Exibe o erro detalhado
-        //         return null; // Retorna null se não for sucesso
-        //     }
-        // } else {
-        //     console.log("Erro na requisição! Código de status: " + response.status);
-        //     return null; // Retorna null em caso de erro na requisição
-        // }
-    } catch (error) {
-        console.log("Erro na requisição:", error);
-        return null; // Retorna null em caso de erro
-    }
-}
-
-
