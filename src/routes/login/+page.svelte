@@ -93,7 +93,7 @@
                 error={errors.blip_hash && errors.blip_hash[0]}
             />
 
-            <Button type="submit" variant="primary">
+            <Button variant="primary">
                 {#if isLoading}
                     Carregando...
                 {:else}
@@ -105,5 +105,4 @@
 </div>
 
 <style>
-    /* Seu CSS personalizado */
 </style>

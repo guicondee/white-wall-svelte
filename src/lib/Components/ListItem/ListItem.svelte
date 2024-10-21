@@ -1,7 +1,6 @@
 <!-- ContactItem.svelte -->
 <script>
     import { goto } from "$app/navigation";
-    import { idContact } from "../../stores/idContact";
     import { authToken } from "../../stores/auth";
     import { fetchMessagesByIdContact } from "$lib/services/blipService";
     import { get } from "svelte/store";
