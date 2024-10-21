@@ -124,8 +124,8 @@
     });
 </script>
 
-<div class="container mx-auto flex justify-center flex-col py-8">
-    <h1 class="text-3xl mb-4 text-gray-500">Contacts</h1>
+<div class="container px-4 mx-auto lg:flex lg:justify-center flex-col py-8">
+    <h1 class="lg:text-3xl text-2xl mb-4 text-gray-500">Contacts</h1>
     <ul class="min-h-[576px] w-full border rounded-md pl-3 pr-3 pt-1">
         {#if contacts.length}
             {#each contacts as contact}
@@ -142,7 +142,7 @@
     <div class="flex justify-center items-center gap-10 mt-4">
         <button
             on:click={prevPage}
-            class="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-400"
+            class="lg:px-4 px-2 py-1.5 lg:py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-400"
             disabled={currentPage === 1}
         >
             Anterior
@@ -152,7 +152,7 @@
         </span>
         <button
             on:click={nextPage}
-            class="px-4 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-400"
+            class="lg:px-4 px-2 py-1.5 lg:py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-400"
             disabled={currentPage === totalPages}
         >
             Próximo

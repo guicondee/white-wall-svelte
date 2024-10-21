@@ -133,7 +133,7 @@
     }
 </script>
 
-<div class="container mx-auto w-full flex justify-center py-8">
+<div class="container px-2 lg:mx-auto lg:w-full flex lg:justify-center lg:py-8">
     <div class="h-full">
         <div class="">
             <a class="" href="/">
@@ -142,20 +142,20 @@
         </div>
         <div class="flex flex-col mt-10">
             <div>
-                <h1 class="text-3xl mb-4 text-gray-500">Messages By Id_contact</h1>
+                <h1 class="lg:text-3xl text-2xl mb-4 text-gray-500">Messages By Id_contact</h1>
             </div>
 
             <div>
-                <ul class="space-y-4 border w-[1000px] rounded-md shadow-md p-4">
+                <ul class="space-y-2 border lg:w-[1000px] rounded-md shadow-md p-2 lg:p-4">
                     {#each messages as message}
                         <li class="flex items-start {message.direction === 'sent' ? 'justify-end' : 'justify-start'}">
                             {#if message.direction === "sent"}
-                                <div class="flex flex-row space-x-3">
-                                    <div class="max-w-xs">
-                                        <div class="bg-blue-100 p-3 rounded-lg">
-                                            <p class="text-sm">{message.content}</p>
+                                <div class="flex flex-row space-x-1 lg:space-x-3">
+                                    <div class="lg:max-w-xs max-w-[280px]">
+                                        <div class="bg-blue-100 lg:p-3 p-2 rounded-lg">
+                                            <p class="text-sm text-[13px]">{message.content}</p>
                                         </div>
-                                        <span class="text-xs text-gray-500 float-right mt-2"
+                                        <span class="lg:text-xs text-[10px] font-medium text-gray-500 float-right mt-2"
                                             >{formatTimestamp(message.timestamp)}</span
                                         >
                                     </div>
@@ -169,7 +169,7 @@
                                     </div>
                                 </div>
                             {:else}
-                                <div class="flex space-x-3">
+                                <div class="flex lg:space-x-3 space-x-1">
                                     <div class="flex-shrink-0">
                                         <div
                                             class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white"
@@ -179,10 +179,12 @@
                                     </div>
 
                                     <div class="max-w-xs">
-                                        <div class="bg-gray-100 p-3 rounded-lg">
-                                            <p class="text-sm">{message.content}</p>
+                                        <div class="bg-gray-100 lg:p-3 p-2 rounded-lg">
+                                            <p class="lg:text-sm text-[13px]">{message.content}</p>
                                         </div>
-                                        <span class="text-xs text-gray-500">{formatTimestamp(message.timestamp)}</span>
+                                        <span class="text-[10px] font-medium lg:text-xs text-gray-500"
+                                            >{formatTimestamp(message.timestamp)}</span
+                                        >
                                     </div>
                                 </div>
                             {/if}

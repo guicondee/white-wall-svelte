@@ -63,7 +63,6 @@
                     contactsStore.set(response.resource?.items as Contact[]);
                     totalContactStore.set(response.resource?.total);
 
-                    localStorage.setItem("authToken", blip_hash);
                     localStorage.setItem("totalContacts", JSON.stringify(response.resource.total as ITotalContacts));
                     goto(`/?page=${currentPage}`);
                 } else {
@@ -78,7 +77,7 @@
     };
 </script>
 
-<div class="flex items-center justify-center min-h-screen bg-background-light">
+<div class="flex lg:px-0 md:px-0 px-4 items-center justify-center min-h-screen bg-background-light">
     <div class="w-full max-w-sm p-8 border border-gray-200 rounded-lg shadow-md">
         <div class="flex justify-center mb-6">
             <img src={LogoWhiteWall} alt="Logo" class="h-14" />

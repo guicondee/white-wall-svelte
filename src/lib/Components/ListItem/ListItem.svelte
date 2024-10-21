@@ -31,7 +31,7 @@
         </div>
         <button
             on:click={navigateToConversation}
-            class="inline-flex items-center px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            class="inline-flex items-center lg:px-2 px-1.5 py-1.5 lg:py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
         >
             Ver Conversa
         </button>
